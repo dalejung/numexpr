@@ -649,7 +649,7 @@ class Win32CPUInfo(CPUInfoBase):
 
     def __init__(self):
         try:
-            import _winreg
+            import winreg
         except ImportError:  # Python 3
             import winreg as _winreg
 
@@ -661,22 +661,22 @@ class Win32CPUInfo(CPUInfoBase):
 
             prgx = re.compile(r"family\s+(?P<FML>\d+)\s+model\s+(?P<MDL>\d+)"
                               "\s+stepping\s+(?P<STP>\d+)", re.IGNORECASE)
-            chnd = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, self.pkey)
+            chnd = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, self.pkey)
             pnum = 0
             while 1:
                 try:
-                    proc = _winreg.EnumKey(chnd, pnum)
-                except _winreg.error:
+                    proc = winreg.EnumKey(chnd, pnum)
+                except winreg.error:
                     break
                 else:
                     pnum += 1
                     info.append({"Processor": proc})
-                    phnd = _winreg.OpenKey(chnd, proc)
+                    phnd = winreg.OpenKey(chnd, proc)
                     pidx = 0
                     while True:
                         try:
-                            name, value, vtpe = _winreg.EnumValue(phnd, pidx)
-                        except _winreg.error:
+                            name, value, vtpe = winreg.EnumValue(phnd, pidx)
+                        except winreg.error:
                             break
                         else:
                             pidx = pidx + 1
@@ -688,7 +688,7 @@ class Win32CPUInfo(CPUInfoBase):
                                     info[-1]["Model"] = int(srch.group("MDL"))
                                     info[-1]["Stepping"] = int(srch.group("STP"))
         except:
-            print(sys.exc_value, '(ignoring)')
+            print((sys.exc_info()[1], '(ignoring)'))
         self.__class__.info = info
 
     def _not_impl(self):
@@ -858,4 +858,4 @@ if __name__ == "__main__":
                     info.append('%s=%s' % (name[1:], r))
                 else:
                     info.append(name[1:])
-    print('CPU information: ' + ' '.join(info))
+    print(('CPU information: ' + ' '.join(info)))

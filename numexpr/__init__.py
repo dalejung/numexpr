@@ -45,7 +45,7 @@ nthreads = _init_num_threads()
 # The default for VML is 1 thread (see #39)
 # set_vml_num_threads(1)
 
-import version
+from . import version
 __version__ = version.version
 
 def print_versions():

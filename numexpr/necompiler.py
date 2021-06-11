@@ -21,7 +21,7 @@ from numexpr.utils import CacheDict
 double = numpy.double
 if sys.version_info[0] < 3:
     int_ = int
-    long_ = long
+    long_ = int
 else:
     int_ = numpy.int32
     long_ = numpy.int64
@@ -74,7 +74,7 @@ if sys.version_info[0] > 2:
     kind_to_typecode['str'] = 's'
     type_to_typecode[str] = 's'
 
-scalar_constant_kinds = kind_to_typecode.keys()
+scalar_constant_kinds = list(kind_to_typecode.keys())
 
 
 class ASTNode(object):
@@ -557,7 +557,7 @@ def precompile(ex, signature=(), context={}):
     types = dict(signature)
     input_order = [name for (name, type_) in signature]
 
-    if isinstance(ex, (str, unicode)):
+    if isinstance(ex, str):
         ex = stringToExpression(ex, types, context)
 
     # the AST is like the expression, but the node objects don't have
@@ -809,7 +809,7 @@ def evaluate(ex, local_dict=None, global_dict=None,
           * 'unsafe' means any data conversions may be done.
     """
     global _numexpr_last
-    if not isinstance(ex, (str, unicode)):
+    if not isinstance(ex, str):
         raise ValueError("must specify expression as a string")
     # Get the names for this expression
     context = getContext(kwargs, frame_depth=1)

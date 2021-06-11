@@ -8,7 +8,7 @@
 #  See LICENSE.txt and LICENSES/*.txt for details about copyright and
 #  rights to use.
 ####################################################################
-from __future__ import absolute_import, print_function
+
 
 import os
 import sys
@@ -149,7 +149,7 @@ class test_numexpr(TestCase):
         assert_allclose(evaluate("min(x**2+2,axis=0)"), np.min(x ** 2 + 2, axis=0))
         assert_allclose(evaluate("max(x**2+2,axis=0)"), np.max(x ** 2 + 2, axis=0))
         # Check longs
-        x = x.astype(long)
+        x = x.astype(int)
         assert_allclose(evaluate("sum(x**2+2,axis=0)"), sum(x ** 2 + 2, axis=0))
         assert_allclose(evaluate("prod(x**2+2,axis=0)"), prod(x ** 2 + 2, axis=0))
         assert_allclose(evaluate("min(x**2+2,axis=0)"), np.min(x ** 2 + 2, axis=0))
@@ -645,16 +645,16 @@ def test_expressions():
             except AssertionError:
                 raise
             except NotImplementedError:
-                print('%r not implemented for %s (scalar=%d, opt=%s)'
-                      % (expr, dtype.__name__, test_scalar, optimization))
+                print(('%r not implemented for %s (scalar=%d, opt=%s)'
+                      % (expr, dtype.__name__, test_scalar, optimization)))
             except Exception as ne_exception:
                 same_exc_type = issubclass(type(ne_exception),
                                            type(np_exception))
                 if np_exception is None or not same_exc_type:
-                    print('numexpr error for expression %r' % (expr,))
+                    print(('numexpr error for expression %r' % (expr,)))
                     raise
             except:
-                print('numexpr error for expression %r' % (expr,))
+                print(('numexpr error for expression %r' % (expr,)))
                 raise
             else:
                 msg = ('expected numexpr error not raised for expression '
@@ -680,7 +680,7 @@ def test_expressions():
 
     x = None
     for test_scalar in (0, 1, 2):
-        for dtype in (int, long, np.float32, double, complex):
+        for dtype in (int, int, np.float32, double, complex):
             array_size = 100
             a = arange(2 * array_size, dtype=dtype)[::2]
             a2 = zeros([array_size, array_size], dtype=dtype)
@@ -708,7 +708,7 @@ def test_expressions():
                             # skip complex comparisons or functions not
                             # defined in complex domain.
                             continue
-                        if (dtype in (int, long) and test_scalar and
+                        if (dtype in (int, int) and test_scalar and
                                     expr == '(a+1) ** -1'):
                             continue
 
@@ -1009,7 +1009,7 @@ class test_threading_config(TestCase):
         if use_vml:
             numexpr.utils.set_vml_num_threads(n_threads)
             set_threads = numexpr.utils.get_vml_num_threads()
-            self.assertEquals(n_threads, set_threads)
+            self.assertEqual(n_threads, set_threads)
         else:
             self.assertIsNone(numexpr.utils.set_vml_num_threads(n_threads))
             self.assertIsNone(numexpr.utils.get_vml_num_threads())
@@ -1089,29 +1089,29 @@ def print_versions():
     np_version = LooseVersion(np.__version__)
 
     if np_version < minimum_numpy_version:
-        print('*Warning*: NumPy version is lower than recommended: %s < %s' % (np_version, minimum_numpy_version))
-    print('-=' * 38)
-    print('Numexpr version:   %s' % numexpr.__version__)
-    print('NumPy version:     %s' % np.__version__)
-    print('Python version:    %s' % sys.version)
+        print(('*Warning*: NumPy version is lower than recommended: %s < %s' % (np_version, minimum_numpy_version)))
+    print(('-=' * 38))
+    print(('Numexpr version:   %s' % numexpr.__version__))
+    print(('NumPy version:     %s' % np.__version__))
+    print(('Python version:    %s' % sys.version))
     (sysname, nodename, release, os_version, machine, processor) = platform.uname()
-    print('Platform:          %s-%s-%s' % (sys.platform, machine, os_version))
+    print(('Platform:          %s-%s-%s' % (sys.platform, machine, os_version)))
     try:
         # cpuinfo doesn't work on OSX well it seems, so protect these outputs 
         # with a try block
         cpu_info = cpu.info[0]
-        print('CPU vendor:        %s' % cpu_info.get('VendorIdentifier', ''))
-        print('CPU model:         %s' % cpu_info.get('ProcessorNameString', ''))
-        print('CPU clock speed:   %s MHz' % cpu_info.get('~MHz',''))
+        print(('CPU vendor:        %s' % cpu_info.get('VendorIdentifier', '')))
+        print(('CPU model:         %s' % cpu_info.get('ProcessorNameString', '')))
+        print(('CPU clock speed:   %s MHz' % cpu_info.get('~MHz','')))
     except KeyError:
         pass
-    print('VML available?     %s' % use_vml)
+    print(('VML available?     %s' % use_vml))
     if use_vml:
-        print('VML/MKL version:   %s' % numexpr.get_vml_version())
-    print('Number of threads used by default: %d '
-          '(out of %d detected cores)' % (numexpr.nthreads, numexpr.ncores))
-    print('Maximum number of threads: %s' % numexpr.MAX_THREADS)
-    print('-=' * 38)
+        print(('VML/MKL version:   %s' % numexpr.get_vml_version()))
+    print(('Number of threads used by default: %d '
+          '(out of %d detected cores)' % (numexpr.nthreads, numexpr.ncores)))
+    print(('Maximum number of threads: %s' % numexpr.MAX_THREADS))
+    print(('-=' * 38))
 
 
 def test(verbosity=1):

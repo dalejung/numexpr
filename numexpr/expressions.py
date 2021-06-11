@@ -27,17 +27,19 @@ double = numpy.double
 default_kind = 'double'
 if sys.version_info[0] < 3:
     int_ = int
-    long_ = long
+    long_ = int
+    pylong = int
 else:
     int_ = numpy.int32
     long_ = numpy.int64
+    pylong = int
 
 type_to_kind = {bool: 'bool', int_: 'int', long_: 'long', float: 'float',
                 double: 'double', complex: 'complex', bytes: 'bytes'}
 kind_to_type = {'bool': bool, 'int': int_, 'long': long_, 'float': float,
                 'double': double, 'complex': complex, 'bytes': bytes}
 kind_rank = ('bool', 'int', 'long', 'float', 'double', 'complex', 'none')
-scalar_constant_types = [bool, int_, long, float, double, complex, bytes]
+scalar_constant_types = [bool, int_, pylong, float, double, complex, bytes]
 
 # Final corrections for Python 3 (mainly for PyTables needs)
 if sys.version_info[0] > 2:
@@ -164,7 +166,7 @@ def bestConstantType(x):
     for converter in float, complex:
         try:
             y = converter(x)
-        except StandardError as err:
+        except Exception as err:
             continue
         if y == x:
             return converter
@@ -441,7 +443,7 @@ class ExpressionNode(object):
 
     # The next check is commented out. See #24 for more info.
 
-    def __nonzero__(self):
+    def __bool__(self):
         raise TypeError("You can't use Python's standard boolean operators in "
                         "NumExpr expressions. You should use their bitwise "
                         "counterparts instead: '&' instead of 'and', "
