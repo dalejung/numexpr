@@ -21,8 +21,6 @@ for more info about it.
 
 """
 
-from __config__ import show as show_config, get_info
-
 from numexpr.interpreter import MAX_THREADS, use_vml, __BLOCK_SIZE1__
 
 is_cpu_amd_intel = False # DEPRECATION WARNING: WILL BE REMOVED IN FUTURE RELEASE
